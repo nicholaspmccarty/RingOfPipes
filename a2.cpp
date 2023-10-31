@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <expected>
+#include <vector>
 
 constexpr inline int READ = 0;
 constexpr inline int WRITE = 1;
@@ -63,23 +64,28 @@ int child(const int pipefd[]) {
 
 int main() {
     // Create Storage for two pipes
-    int pipefd[2] = { 0,0 };
+    int N; // Number of pipes and processes
+    std::cout << "Enter the number of pipes and processes (N): ";
+    std::cin >> N;
+    
+    std::vector<int*> pipefd(static_cast<size_t>(N));
 
     // Fill pipes from os call
-    ASSERT(pipe(pipefd) >= 0);
+    for (size_t i = 0; i < static_cast<size_t>(N); i++) {
+        pipefd[i] = new int[2];
+        ASSERT(pipe(pipefd[i]) >= 0);
 
-    // Fork parent process into two - parent and child
-    pid_t pid = fork();
-    ASSERT(pid >= 0);
-
-    if (pid == 0) {
-        ASSERT(child(pipefd) >= 0);
-    } else {
-        ASSERT(parent(pipefd) >= 0);
-
-        int exitCode = 0;
-        ASSERT(waitpid(pid, &exitCode, 0) >= 0);
+        pid_t pid = fork();
+        ASSERT(pid >= 0);
+        if (pid == 0) {
+            ASSERT(child(pipefd[i]) >= 0);
+        } else {
+            ASSERT(parent(pipefd[i]) >= 0);
+            int exitCode = 0;
+            ASSERT(waitpid(pid, &exitCode, 0) >= 0);
+        }
     }
+
 
     return 0;
 }
