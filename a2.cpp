@@ -63,6 +63,7 @@ StatusOr<void> theMagic(int pipefd1[2], int pipefd2[2]) {
 
     std::string line(15, ' ');
     
+    // MAGIC
     while (!is->eof() && is->good()) {
         getline(*is, line);
         if (!line.empty()) {
@@ -70,24 +71,32 @@ StatusOr<void> theMagic(int pipefd1[2], int pipefd2[2]) {
         }
     }
     
+    // Close the pipes
     close((pipefd1[READ]) >= 0);
     close((pipefd2[WRITE]) >= 0);
+    
+   // Return status ok. 
    return {};
+
+   // End of scope
 }
 
 
 
 int main() {
-    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+   
+   std::cout << "-------------------------------------------------------------------------------" << std::endl;
    int N;
-do {
-    std::cout << "Enter the number of pipes and processes (N): ";
-    if (!(std::cin >> N) || N <= 0) {
+   // Do While to manipulate input
+   do {
+     std::cout << "Enter the number of pipes and processes (N): ";
+     if (!(std::cin >> N) || N <= 0) {
         std::cout << "Invalid input. Please enter a positive integer for N." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-} while (N <= 0);
+      }
+    } while (N <= 0);
+        
     std::cout << "-------------------------------------------------------------------------------" << std::endl;
     
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -95,9 +104,7 @@ do {
     
     std::vector<std::pair<int, int>> pipe_fds;
 
-    // Create N pipes and store the FDs in the vector
     for (uint64_t q = 0; static_cast<int>(q) < N; q++) {
-        
         int in_pipefd[2], out_pipefd[2];
         if (pipe(in_pipefd) >= 0 && pipe(out_pipefd) >= 0) {
             pipe_fds.push_back({in_pipefd[0], out_pipefd[1]});
@@ -109,7 +116,7 @@ do {
     for (size_t z = 0; z < static_cast<size_t>(N - 1); z++) {
          pid_t pid = fork();
         if (pid < 0) {
-            std::cerr << "Fork failed." << std::endl;
+            std::cerr << "This is not ideal. The fork has failed. See console" << std::endl;
             return 1;
         }
         if (pid == 0) {
