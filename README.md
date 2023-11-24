@@ -1,9 +1,12 @@
-# RingOfPipes
+<div align="center">
+  <h1>Ring Communication in C++</h1>
+  
+  <h2>Prerequisites</h2>
+  <ul>
+    <li>A C++ compiler (e.g., g++)</li>
+    <li>A Unix/Linux working environment (e.g., Ubuntu, macOS)</li>
+  </ul>
 
-Prerequisites
-A C++ compiler (e.g g++)
-A unix/linux working enviroment (ubuntu, mac)
-
-
-Description
-This project, implemented in C++, focuses on establishing communication among processes. It creates a ring of N processes connected by N unidirectional pipes, facilitating the passage of a simple message, "Hello World!".
+  <h2>Description</h2>
+  <p>This C++ project focuses on establishing communication among processes by creating a ring of N processes connected by N unidirectional pipes, facilitating the passage of a simple message, "Hello World!".</p>
+  </div>
